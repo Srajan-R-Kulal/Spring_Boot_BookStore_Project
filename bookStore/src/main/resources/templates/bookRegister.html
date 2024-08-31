@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Book Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles */
+        body {
+            background-color: #000;
+            /* Dark background color */
+            color: #fff;
+            /* Light text color */
+            overflow: hidden;
+            /* Hide overflow to prevent scrollbars */
+            background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+            /* Background image URL */
+            animation: moveStars 10s linear infinite;
+            /* Animation for moving stars */
+        }
+
+        .container {
+            position: relative;
+            /* Position relative for z-index */
+            z-index: 1;
+            /* Set z-index to keep elements above the background */
+        }
+
+        @keyframes moveStars {
+            0% {
+                background-position: 0 0;
+                /* Start position of background image */
+            }
+            100% {
+                background-position: 100% 100%;
+                /* End position of background image */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand text-white" href="#">Book Store</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active text-white" aria-current="page" href="home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="available_book">Available Books</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="my_books">My Books</a></li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    	<div>
+                        	<a class="nav-link" style="color: white" href="book_register">New Book Register</a>
+                    	</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5 p-5" style="border: 1px solid black;">
+        <h4 class="text-center">New Book Register</h4>
+
+        <!-- Display form only if the user has ADMIN role -->
+        <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+            <form class="col-md-4 offset-md-4" th:action="@{/save}" method="post">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Book Name</label>
+                    <input type="text" class="form-control" name="name">
+                </div>
+                <div class="mb-3">
+                    <label for="author" class="form-label">Author</label>
+                    <input type="text" class="form-control" name="author">
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="text" class="form-control" name="price">
+                </div>
+                <center>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </center>
+            </form>
+        </div>
+
+        <!-- Display message if user does not have ADMIN role -->
+        <div th:if="${!#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+            <p class="text-center text-danger">You do not have permission to register new books. Please contact an admin if you need access.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

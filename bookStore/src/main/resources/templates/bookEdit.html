@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book Store</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+	crossorigin="anonymous">
+<style>
+/* Custom styles */
+body {
+	font-family: Arial, sans-serif;
+	background-color: #1d1b1b;
+	/* Light background color */
+	color: #000000;
+	/* Dark text color */
+	margin: 0;
+	overflow: hidden;
+}
+
+.container {
+	background-color: #ffffff;
+	/* White background color for form */
+	border: 1px solid black;
+	border-radius: 50px;
+	padding: 20px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	/* Shadow effect */
+	position: relative;
+	overflow: hidden;
+	z-index: 0;
+}
+
+.container::before {
+	content: '';
+	position: absolute;
+	top: -50%;
+	left: -50%;
+	width: 200%;
+	height: 200%;
+	background: linear-gradient(45deg, #b1ddf1, #00ff00, #e5f4e3, #008080);
+	/* Gradient background */
+	animation: animateBackground 10s linear infinite;
+	/* Animation properties */
+	z-index: -1;
+	/* Move the animated background behind other content */
+}
+
+@keyframes animateBackground { 0% {
+	transform: translate(-30%, -30%) rotate(0deg);
+	/* Initial position and rotation */
+}
+
+100%
+{
+transform:
+translate(
+30%
+,
+30%
+)
+rotate(
+360deg
+);
+/* Final position and rotation */
+}
+}
+
+/* Other styles */
+h1, p {
+	position: relative;
+	/* Ensure these elements are above the animated background */
+	z-index: 1;
+}
+
+.form-control {
+	transition: border-color 0.3s ease-in-out;
+	/* Smooth transition for form inputs */
+}
+
+.form-control:focus {
+	border-color: #80bdff;
+	/* Border color on focus */
+	box-shadow: 0 0 0.2rem rgba(0, 123, 255, 0.25);
+	/* Focus shadow */
+}
+
+.btn-primary {
+	background-color: #007bff;
+	/* Primary button color */
+	border-color: #007bff;
+	/* Border color */
+	transition: background-color 0.3s ease-in-out, border-color 0.3s
+		ease-in-out;
+	/* Smooth transition for button */
+}
+
+.btn-primary:hover {
+	animation: pulse 0.5s infinite alternate;
+	/* Pulse animation on hover */
+}
+
+@keyframes pulse { 0% {
+	transform: scale(1);
+}
+
+100%
+{
+transform
+:
+scale(
+1.1
+);
+}
+}
+#drawingCanvas {
+	position: fixed;
+	top: 0;
+	left: 0;
+	pointer-events: none;
+	/* Allow cursor to interact with elements beneath the canvas */
+	z-index: 1000;
+	/* Ensure canvas is above other elements */
+}
+
+.star {
+	position: absolute;
+	width: 2px;
+	height: 2px;
+	background-color: #fff;
+	pointer-events: none;
+}
+</style>
+</head>
+
+<body>
+	<div id="starsContainer"></div>
+
+	<script>
+		// Function to create shooting stars
+		function createStar() {
+			const star = document.createElement('div');
+			star.className = 'star';
+			star.style.top = Math.random() * window.innerHeight + 'px';
+			star.style.left = Math.random() * window.innerWidth + 'px';
+			document.getElementById('starsContainer').appendChild(star);
+
+			// Animate the star
+			const animationDuration = Math.random() * 5 + 2; // Random duration between 2 and 7 seconds
+			star.style.animation = `shoot ${animationDuration}s linear`;
+
+			// Remove the star after animation ends
+			star.addEventListener('animationend', () => {
+				star.remove();
+			});
+		}
+
+		// Create shooting stars at intervals
+		setInterval(createStar, 3000); // Create a new star every 3 seconds
+	</script>
+
+	<canvas id="drawingCanvas"></canvas>
+
+	<script>
+		// Initialize variables
+		let canvas = document.getElementById('drawingCanvas');
+		let ctx = canvas.getContext('2d');
+		let isDrawing = false;
+		let lastX = 0;
+		let lastY = 0;
+
+		// Set canvas size to match window
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+
+		// Event listeners for mouse movement
+		canvas.addEventListener('mousemove', drawLine);
+		canvas.addEventListener('mousedown', (e) => {
+			isDrawing = true;
+			[lastX, lastY] = [e.clientX, e.clientY];
+		});
+		canvas.addEventListener('mouseup', () => isDrawing = false);
+		canvas.addEventListener('mouseout', () => isDrawing = false);
+
+		// Function to draw lines
+		function drawLine(e) {
+			if (!isDrawing) return; // Stop drawing if mouse button is not pressed
+			ctx.beginPath();
+			ctx.moveTo(lastX, lastY);
+			ctx.lineTo(e.clientX, e.clientY);
+			ctx.strokeStyle = 'black'; // Line color
+			ctx.lineWidth = 2; // Line width
+			ctx.stroke();
+			[lastX, lastY] = [e.clientX, e.clientY];
+		}
+	</script>
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand text-white" href=>Book Store</a>
+			<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<li class="nav-item"><a class="nav-link active text-white"
+						aria-current="page" href="home">Home</a></li>
+					<li class="nav-item"><a class="nav-link text-white"
+						href="available_book">Available Books</a></li>
+					<li class="nav-item"><a class="nav-link text-white"
+						href="my_books">My Books</a></li>
+				</ul>
+				<div>
+					<a class="nav-link text-white" href="book_register">New Book Register</a>
+				</div>
+			</div>
+		</div>
+	</nav>
+	<div class="container my-5 p-5">
+		<h4 class="text-center">Edit Book</h4>
+		<form class="col-md-4 offset-md-4" th:action="@{/save}" method="post"
+			th:object="${book}">
+			<input type="hidden" name="id" th:value="${book.id}" />
+			<div class="mb-3">
+				<label for="name" class="form-label">Name</label> <input type="text"
+					class="form-control" name="name" th:value="${book.name}">
+			</div>
+			<div class="mb-3">
+				<label for="author" class="form-label">Author</label> <input
+					type="text" class="form-control" name="author"
+					th:value="${book.author}">
+			</div>
+			<div class="mb-3">
+				<label for="price" class="form-label">Price</label> <input
+					type="text" class="form-control" name="price"
+					th:value="${book.price}">
+			</div>
+			<center>
+				<button type="submit" class="btn btn-primary">Submit</button>
+			</center>
+		</form>
+	</div>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+		integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+		integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>

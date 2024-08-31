@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Custom styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgb(0, 0, 0);
+            /* Dark background color */
+            color: #000000;
+            /* Light text color */
+        }
+
+        .navbar {
+            background-color: #343a40;
+            /* Dark background color for navbar */
+        }
+
+        .navbar-brand, .navbar-nav .nav-link {
+            color: #ffffff !important;
+            /* White text color */
+            transition: transform 0.3s ease-in-out;
+            /* Smooth transition */
+        }
+
+        .navbar-brand:hover, .navbar-nav .nav-link:hover {
+            transform: scale(1.1);
+            /* Enlarge on hover */
+        }
+
+        .jumbotron {
+            background-color: #CFC6C1;
+            /* Dark background color for jumbotron */
+            border-radius: 20px;
+            /* Rounded corners */
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            /* Shadow effect */
+            transform: rotateY(5deg);
+            /* 3D rotation */
+            transition: transform 0.5s ease-in-out;
+            /* Smooth transition */
+            padding: 20px;
+        }
+
+        .jumbotron:hover {
+            transform: rotateY(-5deg);
+            /* Reverse rotation on hover */
+        }
+
+        .jumbotron h1 {
+            animation: colorchange 5s infinite alternate;
+            /* Text color animation */
+            transition: transform 0.3s ease-in-out;
+            /* Smooth transition */
+        }
+
+        @keyframes colorchange {
+            0% {
+                color: rgb(0, 0, 0);
+                /* Start color */
+                transform: translateY(0);
+                /* Initial position */
+            }
+            50% {
+                color: rgb(64, 0, 64);
+                /* Mid color */
+                transform: translateY(-5px);
+                /* Move up slightly */
+            }
+            100% {
+                color: rgb(33, 3, 82);
+                /* End color */
+                transform: translateY(0);
+                /* Return to initial position */
+            }
+        }
+
+        /* Parallax effect */
+        .parallax {
+            background-image: url('/images/bookwithtree.jpeg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgb(157, 182, 204);
+        }
+
+        /* Scroll reveal animation */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .btn-primary {
+            background-color: #494746;
+            /* Add more styles as needed */
+        }
+
+        /* Add this CSS block for navigation link hover color change */
+        .navbar-nav .nav-link:hover {
+            color: #ec4d37 !important;
+            /* Change text color on hover */
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: rgb(64, 0, 64);
+            color: #ffffff;
+            border: 2px solid rgb(0, 0, 0);
+            /* Initial border color */
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s ease-in-out, border-color 0.3s ease-in-out;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            /* Enlarge button on hover */
+            border-color: rgb(0, 0, 0);
+            /* Change border color on hover */
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand">Book Store</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="available_book">Available Books</a></li>
+                    <li class="nav-item"><a class="nav-link" href="my_books">My Books</a></li>
+                    <!-- Conditional rendering for the New Book Register button -->
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    	<div>
+                        <a class="nav-link" style="color: white" href="book_register">New Book Register</a>
+                    	</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="home" class="parallax">
+        <div class="container text-center">
+            <h1 class="scroll-reveal" style="color: Black">Welcome to Book Hub</h1>
+            <p class="lead scroll-reveal" style="color: Black;">
+                <b>“Reading is important. If you know how to read, then the whole world opens up to you.” – Barack Obama </b>
+            </p>
+            <a href="#book_register" class="btn btn-primary btn-lg scroll-reveal" style="background-color: Black;">Popular Books</a>
+        </div>
+    </div>
+
+    <div class="container text-center my-5">
+        <div id="available_books" class="jumbotron scroll-reveal">
+            <img src="/images/mahabharata-removebg-preview-removebg-preview.png" width="300" height="200">
+            <h1>Mahabharata</h1>
+            <p class="lead">Explore our collection of books and find your next read.</p>
+            <a href="@{/available_book}" class="btn btn-primary">View Book</a>
+        </div>
+    </div>
+
+    <div class="container text-center my-5">
+        <div id="my_books" class="jumbotron scroll-reveal">
+            <img src="/images/hindurastradarshanbook-removebg-preview-removebg-preview.png" width="280" height="200">
+            <h1>Hindu Rashtra Darshan</h1>
+            <p class="lead">Manage your personal library and keep track of your favorite books.</p>
+            <a href="@{/available_book}" class="btn btn-primary">View Book</a>
+        </div>
+    </div>
+
+    <div class="container text-center my-5">
+        <div id="book_register" class="jumbotron scroll-reveal">
+            <img src="/images/stephanhawkingbook-removebg-preview.png" width="200" height="200">
+            <h1>A Brief History Of Time</h1>
+            <p class="lead">Register a new book to add it to our collection.</p>
+            <a href="@{/available_book}" class="btn btn-primary">View Book</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Scroll reveal animation
+        window.addEventListener('scroll', () => {
+            const elements = document.querySelectorAll('.scroll-reveal');
+            elements.forEach(element => {
+                if (isElementInViewport(element)) {
+                    element.classList.add('active');
+                }
+            });
+        });
+
+        function isElementInViewport(element) {
+            const rect = element.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+    </script>
+</body>
+
+</html>
